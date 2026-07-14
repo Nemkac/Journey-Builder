@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Skeleton } from "../ui/skeleton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { PrefillFieldRow } from "./prefill-field-row";
+import { DataElementModal } from "./data-element-modal";
 
 interface PrefillPanelProps {
     nodeId: string;
@@ -27,6 +28,7 @@ export function PrefillPanel({ nodeId }: PrefillPanelProps) {
 
     const node = graph.getNode(nodeId);
     const fields = graph.getFieldsForNode(nodeId);
+    const activeField = fields.find((field) => field.id === activeFieldId);
 
     return (
         <Card>
@@ -55,10 +57,12 @@ export function PrefillPanel({ nodeId }: PrefillPanelProps) {
                             ))}
                         </ul>
                     )}
-                {activeFieldId !== null && (
-                    <p className="mt-3 text-xs text-muted-foreground">
-                        Data source picker for "{activeFieldId}" arrives in next phase
-                    </p>
+                {activeField && (
+                    <DataElementModal
+                        nodeId={nodeId}
+                        field={activeField}
+                        onClose={() => setActiveFieldId(null)}
+                    />
                 )}
             </CardContent>
         </Card>
