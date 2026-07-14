@@ -5,8 +5,13 @@ import type { SelectedPrefill } from './prefill.types';
 const PrefillStateContext = createContext<PrefillState | null>(null);
 const PrefillDispatchContext = createContext<Dispatch<PrefillAction> | null>(null);
 
-export function PrefillProvider({ children }: { children: ReactNode }) {
-    const [state, dispatch] = useReducer(prefillReducer, initialPrefillState);
+interface PrefillProviderProps {
+    children: ReactNode;
+    initialState?: PrefillState;
+}
+
+export function PrefillProvider({ children, initialState = initialPrefillState }: PrefillProviderProps) {
+    const [state, dispatch] = useReducer(prefillReducer, initialState);
 
     return (
         <PrefillStateContext.Provider value={state}>
