@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import { PrefillProvider } from './prefill/prefill-context';
 import { FormsList } from './components/graph/form-list';
+import { PrefillPanel } from './components/prefill/prefill-panel';
 
 function App() {
-
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
 
   return (
@@ -13,7 +13,13 @@ function App() {
           selectedNodeId={selectedNodeId}
           onSelectNode={setSelectedNodeId} />
         <div>
-          Prefill pannel
+          {selectedNodeId ? (
+            <PrefillPanel nodeId={selectedNodeId} />
+          ) : (
+            <p className='text-sm text-muted-foreground'>
+              Select a form to continue its prefill mappings.
+            </p>
+          )}
         </div>
       </div>
     </PrefillProvider>
