@@ -47,7 +47,7 @@ describe("PrefillPanel", () => {
         expect(await screen.findByText("Form B.Email")).toBeInTheDocument();
     });
 
-    it("records which field requested a prefill", async () => {
+    it("opens the data source picker for the clicked field", async () => {
         const user = userEvent.setup();
 
         renderPanel(nodeIdByName("Form D"));
@@ -56,7 +56,8 @@ describe("PrefillPanel", () => {
             await screen.findByRole("button", { name: /Email.*Set prefill/ }),
         );
 
-        expect(screen.getByText(/picker for "email"/)).toBeInTheDocument();
+        const dialog = await screen.findByRole("dialog");
+        expect(dialog).toHaveTextContent('Prefill "Email"');
     })
 
     it("renders gracefully for unknown node id", async () => {
@@ -65,4 +66,35 @@ describe("PrefillPanel", () => {
         expect(await screen.findByText("Unknown form")).toBeInTheDocument();
         expect(screen.getByText("This form has no fields")).toBeInTheDocument();
     })
+
+    it("opens the data source picker for the clicked field", async () => {
+        const user = userEvent.setup();
+        renderPanel(nodeIdByName("Form D"));
+
+        await user.click(
+            await screen.findByRole("button", { name: /Email.*Set prefill/ }),
+        );
+
+        const dialog = await screen.findByRole("dialog");
+        expect(dialog).toHaveTextContent('Prefill "Email"');
+    });
+
+    it("pick a mapping in the modal, see it on the row, clear it", async () => {
+        const user = userEvent.setup();
+        renderPanel(nodeIdByName("Form D"));
+
+        await user.click(
+            await screen.findByRole("button", { name: /Email.*Set prefill/ }),
+        );
+        await user.click(await screen.findByRole("button", { name: "Form B" }));
+        await user.click(screen.getByRole("button", { name: "Email" }));
+
+        expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+        expect(screen.getByText("Form B.Email")).toBeInTheDocument();
+
+        await user.click(
+            screen.getByRole("button", { name: "Clear prefill for Email" }),
+        );
+        expect(screen.queryByText("Form B.Email")).not.toBeInTheDocument();
+    });
 })
