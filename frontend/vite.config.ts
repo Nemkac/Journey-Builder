@@ -9,7 +9,7 @@ export default defineConfig({
   resolve: { alias: { "@": path.resolve(__dirname, "./src") } },
   server: {
     proxy: {
-      "/api": { target: "http://localhost:3001", changeOrigin: true },
+      "/api": { target: "http://localhost:3000", changeOrigin: true },
     },
   },
   test: {
